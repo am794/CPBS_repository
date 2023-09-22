@@ -21,7 +21,7 @@ start = time.time()
 # Convert loci file into a dictionary of lists with loci number as keys and list of genes as values
 def loci_dictionary(loci_path):
     loci_diction = {}
-    with open('Input.gmt.txt','r') as loci:
+    with open(loci_path,'r') as loci:
        for i,locus in enumerate(loci):
         geneList = []
         loci_diction[i]=locus.strip('\n').split('for ')[1].split('\t')  # Data Wrangling to fetch the gene names in each loci
@@ -41,12 +41,12 @@ def string_dictionary(string_path):
     string_diction={}
     with open(string_path, 'r') as string_file:
        for edge in string_file:
-        genes = sorted(edge.strip().split('\t'),reverse=True)  # sort column1 and column2 of each row
-        if genes[0] in string_diction.keys():
-            if (genes[1] not in string_diction[genes[0]].keys()) and (genes[2] not in string_diction[genes[0]].get(genes[1], {})):
+           genes = sorted(edge.strip().split('\t'),reverse=True)  # sort column1 and column2 of each row
+           if genes[0] in string_diction.keys():
+              if (genes[1] not in string_diction[genes[0]].keys()) and (genes[2] not in string_diction[genes[0]].get(genes[1], {})):
                 string_diction[genes[0]].update({genes[1]:genes[2]})
-        elif genes[0] not in string_diction.keys():
-            string_diction[genes[0]] = {genes[1]:genes[2]} 
+           elif genes[0] not in string_diction.keys():
+               string_diction[genes[0]] = {genes[1]:genes[2]} 
     return(string_diction)
 
 #--------------------------------------------------------------------------#
