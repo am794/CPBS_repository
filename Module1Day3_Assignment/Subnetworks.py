@@ -107,9 +107,11 @@ def non_fa_list(fa_list,string_diction):
                 else:
                     string_subset[gene1].update({gene2:sub_string[gene2]}) # also gives subnetwork2
             elif gene1 not in fa_list and gene2 in fa_list:
-                not_fa.append(gene1)
+                if gene1 not in not_fa:
+                    not_fa.append(gene1)
             elif gene1 in fa_list and gene2 not in fa_list:
-                not_fa.append(gene2)
+                if gene1 not in not_fa:
+                    not_fa.append(gene2)
 
     not_fa_nodes_count={}  
     for node in not_fa:
