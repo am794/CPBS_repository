@@ -14,6 +14,8 @@
 #--------------------------------------------------------------------------#
 
 import time
+import sys
+
 start = time.time()
 
 # Convert loci file into a dictionary of lists with loci number as keys and list of genes as values
@@ -139,11 +141,13 @@ def diction_to_text(nested_dict):
             result.append((key1, key2, value))
     return result
 
-loci_path = 'Input.gmt.txt'
+#loci_path = 'Input.gmt.txt'
+loci_path=sys.argv[1]
 loci_geneList = loci_dictionary(loci_path)
 fa_list = loci_list(loci_path)
 
-string_path='STRING 1.txt'
+#string_path='STRING 1.txt'
+string_path=sys.argv[2]
 string_genediction = string_dictionary(string_path)
 
 subnetwork_diction_between = subnetwork_1(loci_geneList,string_genediction)
@@ -164,7 +168,7 @@ with open('subnetwork2.txt', 'w') as file:
     for row in sub_data:
         file.write('\t'.join(row) + '\n')
 
-with open('Subnetwork3.txt', 'w') as file:
+with open('subnetwork3.txt', 'w') as file:
     for row in subnetwork3:
         file.write('\t'.join(row) + '\n')
 
