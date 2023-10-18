@@ -36,4 +36,3 @@ Example:
 
 ## Additional Documentation
 
-https://docs.google.com/document/d/1LAkTVxXKhVa0joW9RsNr0VPWyctVbuGfIAhhJcwRDg0/edit?usp=sharing
