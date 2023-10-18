@@ -28,7 +28,7 @@ Arguments:
 
 ## Usage
 
-`python Subnetworks_Significance.py Disease_gene_file.txt Protein_Protein_Interaction.txt -nSub -nBins -nPerm`
+`python Subnetworks_Significance.py Disease_gene_file.txt Protein_Protein_Interaction.txt --nSub --nBins --nPerm`
 
 Example:
 
