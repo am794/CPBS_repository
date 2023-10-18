@@ -28,7 +28,7 @@ Arguments:
 
 ## Usage
 
-`python Subnetworks_Significance.py Disease_gene_file.txt Protein_Protein_Interaction.txt --nSub --nBins --nPerm`
+`python Subnetworks_Significance.py Disease_gene_file.txt Protein_Protein_Interaction.txt -nSub -nBins -nPerm`
 
 Example:
 
@@ -36,3 +36,4 @@ Example:
 
 ## Additional Documentation
 
+https://docs.google.com/document/d/1LAkTVxXKhVa0joW9RsNr0VPWyctVbuGfIAhhJcwRDg0/edit?usp=sharing
