@@ -24,6 +24,7 @@ Arguments:
 
 - network.png
 - FA_subnetwork.txt
+- gene_scores.txt
 
 ## Usage
 
@@ -36,5 +37,7 @@ Example:
 ## First 200 subnetworks
 
 The network visualization below shows first 200 subnetworks combined. Nodes are color coded by LociID shown in the legend and size of the node indicates the log10 normalized average gene scores. 
+
+<img src="network.png" alt="drawing" width="400" height="300"/>
 
 ## Additional Documentation
