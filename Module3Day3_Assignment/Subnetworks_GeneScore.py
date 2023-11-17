@@ -189,7 +189,7 @@ def subnetwork_genescore(loci_diction,num_subnet=5000,min_edges=0):
 # Input params: file_path is the path for saving the network                   #
 # Input params: num_sub_viz (First N subnetworks to visualize)                 #
 #------------------------------------------------------------------------------#
-def fa_subnet_viz(gene_scores_final,fa_subnetwork,loci_diction,file_path,num_subs_viz=5000):
+def fa_subnet_viz(gene_scores_final,fa_subnetwork,loci_diction,file_path="./network.png",num_subs_viz=5000):
     nodes_subs=set()
     sub_fa_network = []
     for i, fa in enumerate(fa_subnetwork.values()):
@@ -258,17 +258,27 @@ def fa_subnet_viz(gene_scores_final,fa_subnetwork,loci_diction,file_path,num_sub
     return file_path
 
 
-string_path = "./STRING.txt"
-input_path = "./Input.gmt.txt"
-output_viz_path = "./subnets_viz.png"
+# parsing command line arguments
+parser=argparse.ArgumentParser()
+parser.add_argument('-dl','--diseaseloci',type=str,help='Disease loci file with list of genes')
+parser.add_argument('-n','--network',type=str,help='Network file in tab delimited format')
+parser.add_argument('--nSub',type=int,help='Number of random subnetworks to generate. Default is 5000')
+parser.add_argument('--minEdges',type=int,help='Minimum number of edges for a subnetwork to be considered. Default is 0')
+parser.add_argument('--nSubViz',type=int,help='First N subnetworks to visualize. Default is 200')
+#parser.add_argument('--out',type=int,help='Path for saving the network visualization')
 
-loci_diction,fa_set,fa_diction,fa_string_set,string_set = data_to_diction(input_path,string_path)
-fa_subnetwork,gene_scores_loci,iteration_fa_genes_diction_2= subnetwork_genescore(loci_diction,num_subnet=5,min_edges=0)
-gene_scores_final=gene_scores_avg(loci_diction,gene_scores_loci,compare_set=string_set,num_subnet=10)
-file_path=fa_subnet_viz(gene_scores_final,fa_subnetwork,loci_diction,file_path=output_viz_path,num_subs_viz=5)
+args = parser.parse_args()
 
+loci_diction,fa_set,fa_diction,fa_string_set,string_set = data_to_diction(input_path=args.diseaseloci,string_path=args.network)
+fa_subnetwork,gene_scores_loci,iteration_fa_genes_diction_2= subnetwork_genescore(loci_diction,num_subnet=args.nSub,min_edges=args.minEdges)
+gene_scores_final=gene_scores_avg(loci_diction,gene_scores_loci,compare_set=string_set,num_subnet=args.nSub)
+file_path=fa_subnet_viz(gene_scores_final,fa_subnetwork,loci_diction,file_path="./network.png",num_subs_viz=args.nSubViz)
 
-print(file_path)
+# save the 5000 random FA subnetworks
+with open('FA_subnetwork.txt', 'w') as file:
+    for k, v in fa_subnetwork.items():
+        for sub in v:
+            file.write("{}\t{}\n".format(k,'\t'.join(sub)))
 
 # run time
 end = (time.time())
