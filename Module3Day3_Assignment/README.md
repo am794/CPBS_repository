@@ -25,6 +25,7 @@ Arguments:
 - network.png
 - FA_subnetwork.txt
 - gene_scores.txt
+- GeneScore_Distribution.png
 
 ## Usage
 
@@ -47,4 +48,8 @@ First 200 subnetworks <br>
 First 500 subnetworks <br>
 <br>
 <img src="./OutputFiles/network_500.png" alt="drawing" width="400" height="300"/>
-## Additional Documentation
+
+
+## Additional Documentation 
+
+https://docs.google.com/document/d/1TbVRrIFTITzxvrPdeLbh282QBcfuMC313u7lxWaopnc/edit?usp=sharing
