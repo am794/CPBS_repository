@@ -49,6 +49,10 @@ First 500 subnetworks <br>
 <br>
 <img src="./OutputFiles/network_500.png" alt="drawing" width="400" height="300"/>
 
+## Additional analysis
+
+- For summary statistics on gene scores use genescores.py
+
 
 ## Additional Documentation 
 
