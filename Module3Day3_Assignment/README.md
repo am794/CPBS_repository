@@ -38,11 +38,13 @@ Example:
 
 The network visualization below shows first 200 subnetworks combined. Nodes are color coded by LociID shown in the legend and size of the node indicates the log10 normalized average gene scores. 
 
-First 200 subnetworks
+First 200 subnetworks <br>
+<br>
 <img src="./OutputFiles/network_200.png" alt="drawing" width="400" height="300"/>
 
 <br>
 
-First 500 subnetworks
+First 500 subnetworks <br>
+<br>
 <img src="./OutputFiles/network_500.png" alt="drawing" width="400" height="300"/>
 ## Additional Documentation
