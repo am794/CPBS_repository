@@ -1,23 +1,14 @@
-#------------------------------------------------------------------------------
-# Section 1: Data Wrangling; Functions: data_to_diction; string_to_diction
-# Section 2a: Disease associated gene subnetwork; Functions: first_parent_population
-# Section 2b: GA optimization (Mutation); Functions: parent_mean_edgeweight, generate_random_excluding, ga_mutation,
-# Section 2c: GA optimization (Mating); Functions: ga_mating
-# Section 3a: Null case
+#--------------------------------------------------------------------------------------------------------------------#
+# Section 1: Data Wrangling; Functions: data_to_diction; string_to_diction                                           #
+# Section 2a: Disease associated gene subnetwork; Functions: first_parent_population                                 #
+# Section 2b: GA optimization (Mutation); Functions: parent_mean_edgeweight, generate_random_excluding, ga_mutation  #
+# Section 2c: GA optimization (Mating); Functions: ga_mating                                                         #
+# Section 3a: Null case and statistical test                                                                         #
+# Section 4: Gene scores                                                                                             #
+#--------------------------------------------------------------------------------------------------------------------#
 
 import random
-#-------------------------------------------------------------------------------------------------------------------#
-# Function to convert input files into objects for the later steps                                                  #
-# loci_diction: dictionary of loci (Key) and genes (value)                                                          #
-# fa_set: set with all the fa genes from loci_diction                                                               #
-# fa_diction: Subset of the STRING.txt file but with FA gene connected to another FA gene                           #
-# Inputs: input path for Input.gmt.txt and string path for STRING.txt                                               #
-# Outputs: loci_diction (key as loci ID and values as genes),                                                       #
-# Outputs: fa_set (set of 584 genes that are in the Input file),                                                    #
-# Outputs: fa_diction (dictionary of FA gene to FA gene connections total 1024),                                    #
-# Outputs: fa_string_set (set of FA genes that are in the above 1024 list. Total 329 genes),                        #
-# Outputs: string_set (set of FA genes that exist in STRING file, they may be connected to non-FA genes. Total 508) #
-#-------------------------------------------------------------------------------------------------------------------#
+
 ## Function converts input files into dictionaries
 def data_to_diction(input_path,string_path):
     with open(input_path, 'r') as input:
@@ -122,15 +113,15 @@ def first_parent_population(loci_diction,fa_diction,num_iterations=5000,min_edge
     return first_parent_subnetwork,subnetwork_diction,subnetwork_diction_edge_counts
 
 def parent_mean_edgeweight(subnetwork_diction,num_iterations=5000):
-    #parent_subnet_edgeweight={}
+    parent_subnet_edgeweight={}
     mean_parent_edgeweight=0
     for subnet_index, edge_list in subnetwork_diction.items():
-        #parent_subnet_edgeweight[subnet_index]=[]
+        parent_subnet_edgeweight[subnet_index]=0
         for edge_num,edges in enumerate(edge_list):
-            #parent_subnet_edgeweight[subnet_index].append(edges[2])
+            parent_subnet_edgeweight[subnet_index]+=edges
             mean_parent_edgeweight+=float(edges[2])
 
-    return float(mean_parent_edgeweight/num_iterations)      
+    return float(mean_parent_edgeweight/num_iterations), parent_subnet_edgeweight  
 #parent_subnet_edgeweight    
 
 def generate_random_excluding(range_start, range_end, exclude_number):
@@ -284,6 +275,7 @@ def match_fa_nonfa_by_bucket(nested_dict,disease_gene):
         elif disease_gene in inner_dict:
             return bin_cat                 # returns bin category or key of the dictionary that has the fa gene being searched
 
+# Generate initial nonFA subnetwork from initial FA subnetworks population
 def generate_nonfa_from_fa(optimized_FA_subnetwork,random_seed,bin_diction,string_diction):
     nonFA_parent={}
     nonFA_parent_size={}
@@ -338,33 +330,51 @@ def generate_random_loci_NonFA(nonFA_parent_genes,all_genes_set):
 
     return non_fa_loci
 
-
+## Calculate gene scores using the avergae density
 def gene_score(iteration_fa_genes_diction_2,fa_diction,loci_diction):
     gene_score = {}
     for key,value in iteration_fa_genes_diction_2.items():
-    
         chosen_gene = iteration_fa_genes_diction_2[key]
         temp_list_4=[]
+        temp_list_4_sum=0
         for outer_g, inner_d in fa_diction.items():
             for inner_g, edge_value in inner_d.items():
                 if outer_g != chosen_gene and inner_g != chosen_gene:
                     if outer_g in iteration_fa_genes_diction_2.values() and inner_g in iteration_fa_genes_diction_2.values():
                         temp_list_4.append([outer_g,inner_g,edge_value])
+                        temp_list_4_sum+=float(edge_value)
                         
         for loci_fa_gene in loci_diction[key]:
             iteration_fa_genes_diction_2[key] = loci_fa_gene
             temp_list_5=[]
+            temp_list_5_sum=0
             gene_score_diction = {}
 
             for outer_g, inner_d in fa_diction.items():
-                for inner_g, edge_value in inner_d.items():
-                    if outer_g in iteration_fa_genes_diction_2.values() and inner_g in iteration_fa_genes_diction_2.values():
-                        temp_list_5.append([outer_g,inner_g,edge_value])
-
+                if outer_g in iteration_fa_genes_diction_2.values():
+                    for inner_g, edge_value in inner_d.items():
+                        if inner_g in iteration_fa_genes_diction_2.values():
+                            temp_list_5.append([outer_g,inner_g,edge_value])
+                            temp_list_5_sum+=float(edge_value)
+                        
             if key not in gene_score.keys():
-                gene_score[key]={loci_fa_gene:(len(temp_list_5)-len(temp_list_4))}
+                gene_score[key]={loci_fa_gene:((temp_list_5_sum/(len(temp_list_5)+0.01))-(temp_list_4_sum/(len(temp_list_4)+0.01)))}
             else:
-                gene_score[key].update({loci_fa_gene:(len(temp_list_5)-len(temp_list_4))})
+                gene_score[key].update({loci_fa_gene:((temp_list_5_sum/(len(temp_list_5)+0.01))-(temp_list_4_sum/(len(temp_list_4)+0.01)))})
  
     return(gene_score)
+
+# average scores
+def gene_scores_avg(loci_diction,gene_scores_loci,fa_string_set,num_iterations):
+    gene_scores_final = {loci: {inner_key: 0 for inner_key in loci_genes} for loci, loci_genes in loci_diction.items()}
+
+    for locus,inner_d in gene_scores_loci.items():
+        for inner_g,score_sum in inner_d.items():
+            if inner_g not in fa_string_set:
+                gene_scores_final[locus][inner_g]='NA'
+            else:
+                gene_scores_final[locus][inner_g]="{:.4f}".format(float(score_sum)/num_iterations)
+
+    return gene_scores_final
+
 
