@@ -59,13 +59,11 @@ parent_ = nonFA_parent_genes
 #non_fa_loci=generate_random_loci_NonFA(parent_,all_genes_set)
 gen=1
 nonFA_parent_opt=nonFA_parent
-while abs(mean_delta_perc) > 0.5:
-      nonFA_normalized_weights_parent_opt,nonFA_subnetwork_diction_updated_opt,nonFA_parent_subnetwork_opt,nonFA_subnetwork_normalized_weighted_opt=ga_mutation(non_fa_loci,string_diction,parent_subnetwork=parent_,num_iterations=5000)
-      #mate_population,mate_parent_subnetwork,mate_normalized_weighted,mean_delta,mean_delta_perc=ga_mating(fa_diction,normalized_weights_parent,num_iterations=5000,min_edges=0)
-      NonFA_parent_mean_edgeweights_opt=parent_mean_edgeweight(nonFA_parent_opt,num_iterations=5000)
+while abs(nonFA_mean_delta_perc) > 0.5:
+      nonFA_normalized_weights_parent_opt,nonFA_subnetwork_diction_updated_opt,nonFA_parent_subnetwork_opt,nonFA_subnetwork_normalized_weighted_opt=ga_mutation(non_fa_loci,string_diction,parent_subnetwork=parent_,num_iterations=num_iterations)
+      NonFA_parent_mean_edgeweights_opt=parent_mean_edgeweight(nonFA_parent_opt,num_iterations=num_iterations)
       nonFA_mate_population_opt,nonFA_mate_parent_subnetwork_opt,nonFA_mate_weighted_opt,nonFA_mean_delta,nonFA_mean_delta_perc=ga_mating(string_diction,nonFA_normalized_weights_parent_opt,NonFA_parent_mean_edgeweights_opt,parent_subnetwork=parent_,num_iterations=5000,min_edges=0)
-      #print(gen,parent_mean_edgeweights_opt,sum(mate_weighted_opt.values())/5000,mean_delta,mean_delta_perc)
-      print(gen,NonFA_parent_mean_edgeweights_opt,sum(nonFA_mate_weighted_opt.values())/5000,nonFA_mean_delta,nonFA_mean_delta_perc)
+      print(gen,NonFA_parent_mean_edgeweights_opt,sum(nonFA_mate_weighted_opt.values())/num_iterations,nonFA_mean_delta,nonFA_mean_delta_perc)
       parent_ = mate_parent_subnetwork_opt
       non_fa_loci=generate_random_loci_NonFA(parent_,all_genes_set)
       nonFA_parent_opt=nonFA_mate_population_opt
