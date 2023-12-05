@@ -26,21 +26,17 @@ There are two input files:<br>
 Arguments:
 - nSub: Number of subnetworks. Default is 5000 <br>
 - minEdges: Number of minimum Edges for the subnetwork to be considered. Default is 0 <br>
-- nbins: Number of bins for quantile binning
-- nSubViz: First N subnetworks to visualize. Default is 200 <br>
+- nbins: Number of bins for quantile binning<br>
 
 ## Output files
 
-- network.png
-- FA_subnetwork.txt
+- FA_subnetwork_opt.txt
 - gene_scores.txt
 
 ## Usage
 
-`python Subnetworks_GeneScore.py Disease_gene_file.txt Protein_Protein_Interaction.txt --nSub --minEdges --nSubViz`
-
-Example:
-
-`python Subnetworks.py Input.gmt.txt STRING 1.txt --nSub 5000 --minEdges 0 --nSubViz 200`
+`python Subnetworks_GeneScore.py Disease_gene_file.txt Protein_Protein_Interaction.txt --nSub --minEdges --nbins`
 
 ## Additional Documentation
+
+https://docs.google.com/document/d/11iltqExbaIVE_33g_PgRMbFSQLF7Afqdq2M8LJJc2k4/edit?usp=sharing
